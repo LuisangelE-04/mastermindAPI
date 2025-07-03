@@ -27,6 +27,16 @@ namespace Mastermind.Services
       return AllColors.OrderBy(color => random.Next()).Take(MAX_COLORS).ToList();
     }
 
+    public string ColorsToString(IEnumerable<Colors> colors)
+    {
+      return string.Join(",", colors.Select(c => c.ToString()));
+    }
+
+    public List<Colors> StringToColors(string colorString)
+    {
+      return colorString.Split(',').Select(c => Enum.Parse<Colors>(c)).ToList();
+    }
+
     public Dictionary<Match, int> EvaluateGuess(IEnumerable<Colors> secretCode, IEnumerable<Colors> guess)
     {
       var matches = Enumerable.Range(0, MAX_COLORS).Select(positionIndex => MatchForPosition(positionIndex, secretCode, guess));

@@ -50,10 +50,19 @@ namespace Mastermind.Models
     POSITION,
     NONE
   }
-  
+
   public class MastermindDb : DbContext
   {
     public MastermindDb(DbContextOptions options) : base(options) { }
-    public DbSet<Game> GameGuesses { get; set; } = null!;
+    public DbSet<Game> Games { get; set; } = null!;
+    public DbSet<GameGuess> GameGuesses { get; set; } = null!;
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+      modelBuilder.Entity<GameGuess>()
+        .HasOne(g => g.GameEntity)
+        .WithMany(game => game.Guesses)
+        .HasForeignKey(g => g.GameId);
+    }
   }
 }

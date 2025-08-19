@@ -6,6 +6,8 @@ using Mastermind.DTOs;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var MyAllowSpecificOrigins = "AllowLocalHost";
+
 var connectionString = builder.Configuration.GetConnectionString("MastermindGames") ?? "Data Source=MastermindGames.db";
 
 builder.Services.AddEndpointsApiExplorer();
@@ -20,6 +22,16 @@ builder.Services.AddSwaggerGen(c =>
     Version = "v1"
   });
 });
+builder.Services.AddCors(options =>
+{
+  options.AddPolicy(name: MyAllowSpecificOrigins,
+                    policy =>
+                    {
+                      policy.WithOrigins("http://localhost:3000")
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+                    });
+});
 
 var app = builder.Build();
 
@@ -31,6 +43,8 @@ if (app.Environment.IsDevelopment())
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Mastermind Game API v1");
   });
 }
+
+app.UseCors(MyAllowSpecificOrigins);
 
 app.MapGet("/", () => "Hello World!");
 
@@ -191,7 +205,7 @@ app.MapGet("/colors", () =>
 })
 .WithName("GetAvailableColors")
 .WithSummary("Get available colors")
-.WithDescription("Returns all available colors taht can be used in the game");
+.WithDescription("Returns all available colors that can be used in the game");
 
 
 app.Run();

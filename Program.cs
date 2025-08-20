@@ -45,8 +45,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors(MyAllowSpecificOrigins);
+app.UseSwagger();
+app.UseSwaggerUI();
 
-app.MapGet("/", () => "Hello World!");
+app.MapGet("/", () => "Hello from Azure!");
 
 
 app.MapPost("/games", async (MastermindDb db, GameLogicService gameLogic, CreateGameRequest request) =>

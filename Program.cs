@@ -27,7 +27,7 @@ builder.Services.AddCors(options =>
   options.AddPolicy(name: MyAllowSpecificOrigins,
                     policy =>
                     {
-                      policy.WithOrigins("http://localhost:3000")
+                      policy.AllowAnyOrigin()
                             .AllowAnyHeader()
                             .AllowAnyMethod();
                     });
@@ -46,7 +46,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors(MyAllowSpecificOrigins);
 app.UseSwagger();
-app.UseSwaggerUI();
+app.UseSwaggerUI(); 
 
 app.MapGet("/", () => "Hello from Azure!");
 

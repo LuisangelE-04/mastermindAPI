@@ -4,12 +4,13 @@ using Mastermind.Models;
 using Mastermind.Services;
 using Mastermind.DTOs;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var MyAllowSpecificOrigins = "AllowLocalHost";
 
-var connectionString = builder.Configuration.GetConnectionString("MastermindGames");
+var connectionString = builder.Configuration.GetConnectionString("MastermindGames") ?? throw new InvalidOperationException("Connection string 'MastermindGames' not found.");
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddDbContext<MastermindDb>(options => options.UseNpgsql(connectionString));

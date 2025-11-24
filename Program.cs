@@ -3,21 +3,30 @@ using Microsoft.OpenApi.Models;
 using Mastermind.Models;
 using Mastermind.Services;
 using Mastermind.DTOs;
+using Microsoft.AspNetCore.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var MyAllowSpecificOrigins = "AllowLocalHost";
 
-var connectionString = builder.Configuration.GetConnectionString("MastermindGames") ?? "Data Source=MastermindGames.db";
+var connectionString = builder.Configuration.GetConnectionString("MastermindGames");
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSqlite<MastermindDb>(connectionString);
+builder.Services.AddDbContext<MastermindDb>(options => options.UseNpgsql(connectionString));
 builder.Services.AddScoped<GameLogicService>();
+builder.Services.AddRateLimiter(options =>
+{
+  options.AddFixedWindowLimiter("Default", RateLimiterOptions =>
+  {
+    RateLimiterOptions.PermitLimit = 200;
+    RateLimiterOptions.Window = TimeSpan.FromMinutes(1);
+  });
+});
 builder.Services.AddSwaggerGen(c =>
 {
   c.SwaggerDoc("v1", new OpenApiInfo
   {
-    Title = "Master Game API",
+    Title = "Mastermind Game API",
     Description = "A web API for playing the classic Mastermind code-breaking game",
     Version = "v1"
   });
